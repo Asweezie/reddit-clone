@@ -2,9 +2,11 @@ package spring.testapp.model;
 
 import jakarta.persistence.*;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 
@@ -17,6 +19,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "No blank!!")
     @Column(nullable = false, unique = true)
     private String username;
 
@@ -26,6 +29,7 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @CreationTimestamp
     @Column(name = "created_at")
     private Instant createdAt;
 
