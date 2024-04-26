@@ -36,6 +36,9 @@ public class User {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
+    private boolean enabled;
+
+
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<Post> posts = new ArrayList<>();
 //
