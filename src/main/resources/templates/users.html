@@ -23,6 +23,10 @@
         <td th:text="${user.email}">User Email</td>
         <td th:text="${#temporals.format(user.createdAt, 'yyyy-MM-dd')}">Creation Date</td>
         <td th:text="${user.enabled ? 'Active' : 'Inactive'}">Status</td>
+        <td>
+            <a th:href="@{/users/edit/{id}(id=${user.id})}">Edit</a> |
+            <a th:href="@{/users/delete/{id}(id=${user.id})}" onclick="return confirm('Are you sure?')">Delete</a>
+        </td>
     </tr>
     </tbody>
 </table>
