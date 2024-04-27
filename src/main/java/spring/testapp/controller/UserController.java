@@ -26,7 +26,7 @@ public class UserController {
     @GetMapping
     public String getUsersPage(Model model) {
         List<User> users = userService.findAllUsers();
-        Optional testUser = userService.findById(25L);
+
         model.addAttribute("users", users);
         // Fetch the list of users from the service layer and add it to the model
         return "users";
@@ -52,8 +52,9 @@ public class UserController {
         return "redirect:/users";
     }
 
+//    UPDATE
     @GetMapping("/edit/{id}")
-    public String showUpdateUserForm(@PathVariable("id") long id, Model model) {
+    public String showUpdateUserForm(@PathVariable long id, Model model) {
         User user = userService.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user id"));
         model.addAttribute("user", user);
         return "users/edit";

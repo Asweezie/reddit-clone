@@ -3,6 +3,7 @@ package spring.testapp.model;
 import jakarta.persistence.*;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,9 +24,11 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
+    @Size(min = 5, message = "Email must be at least 5 characters long")
     @Column(nullable = false, unique = true)
     private String email;
 
+    @NotBlank(message = "No blank!!")
     @Column(nullable = false)
     private String password;
 
