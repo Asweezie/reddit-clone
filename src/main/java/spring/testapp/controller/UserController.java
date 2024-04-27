@@ -4,13 +4,13 @@ import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import spring.testapp.model.User;
 import spring.testapp.service.UserService;
+
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/users")
@@ -21,8 +21,13 @@ public class UserController {
         this.userService = userService;
     }
 
+
+//    GETS
     @GetMapping
     public String getUsersPage(Model model) {
+        List<User> users = userService.findAllUsers();
+        Optional testUser = userService.findById(25L);
+        model.addAttribute("users", users);
         // Fetch the list of users from the service layer and add it to the model
         return "users";
     }
@@ -34,6 +39,8 @@ public class UserController {
         return "users/create";
     }
 
+
+//    POSTS
     @PostMapping("/create")
     public String createUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
 
@@ -44,4 +51,23 @@ public class UserController {
         userService.createUser(user);
         return "redirect:/users";
     }
+
+    @GetMapping("/edit/{id}")
+    public String showUpdateUserForm(@PathVariable("id") long id, Model model) {
+        User user = userService.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user id"));
+        model.addAttribute("user", user);
+        return "users/edit";
+    }
+
+    @PostMapping("/update/{id}")
+    public String updateUser(@PathVariable("id") Long id, @ModelAttribute("user") @Valid User user,
+                             BindingResult result) {
+        if (result.hasErrors()) {
+            return "users/edit";
+        }
+        userService.updateUser(id, user);
+        return "redirect:/users";
+    }
+
+
 }
