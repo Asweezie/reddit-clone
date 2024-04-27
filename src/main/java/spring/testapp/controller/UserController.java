@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import spring.testapp.dto.UserDTO;
 import spring.testapp.model.User;
 import spring.testapp.service.UserService;
 
@@ -25,7 +26,7 @@ public class UserController {
 //    GETS
     @GetMapping
     public String getUsersPage(Model model) {
-        List<User> users = userService.findAllUsers();
+        List<UserDTO> users = userService.findAllUsers();
 
         model.addAttribute("users", users);
         // Fetch the list of users from the service layer and add it to the model

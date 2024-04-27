@@ -1,11 +1,13 @@
 package spring.testapp.service;
 
 import org.springframework.stereotype.Service;
+import spring.testapp.dto.UserDTO;
 import spring.testapp.model.User;
 import spring.testapp.repository.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -21,9 +23,20 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public List<User> findAllUsers() {
-        return userRepository.findAll();
+    public List<UserDTO> findAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
+
+    private UserDTO convertToDTO(User user) {
+        return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getCreatedAt(), user.isEnabled());
+    }
+
+//    public List<User> findAllUsers() {
+//        return userRepository.findAll();
+//    }
 
 //    CREATION
     public void createUser(User user) {
