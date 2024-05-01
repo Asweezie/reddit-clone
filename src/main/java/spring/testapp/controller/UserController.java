@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import spring.testapp.dto.UserDTO;
 import spring.testapp.model.User;
 import spring.testapp.service.UserService;
@@ -36,6 +37,29 @@ public class UserController {
         return "users";
     }
 
+    @GetMapping("/{id}")
+    public String getUser(@PathVariable Long id, Model model) {
+        Optional<UserDTO> user = userService.findById(id);
+        if (user.isPresent()) {
+            model.addAttribute("user", user.get());
+            return "users/profile";
+        } else {
+            model.addAttribute("error", "User not found");
+            return "users/error"; // Assuming 'error' is your error handling template
+        }
+    }
+
+    @GetMapping("/search")
+    public String searchUserById(@RequestParam("id") Long id, RedirectAttributes redirectAttributes) {
+        Optional<UserDTO> userDTO = userService.findById(id);
+        if (userDTO.isPresent()) {
+            return "redirect:/users/" + id;
+        } else {
+            redirectAttributes.addFlashAttribute("error", "User with ID: " + id + " not found.");
+            return "redirect:/users";  // Redirect back to the user list if not found
+        }
+    }
+
 
     @GetMapping("/create")
     public String showCreateUserForm(Model model) {
@@ -59,7 +83,7 @@ public class UserController {
 //    UPDATE
     @GetMapping("/edit/{id}")
     public String showUpdateUserForm(@PathVariable long id, Model model) {
-        User user = userService.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user id"));
+        UserDTO user = userService.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user id"));
         model.addAttribute("user", user);
         return "users/edit";
     }

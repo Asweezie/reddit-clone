@@ -23,22 +23,22 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
 
 
 //    CONSTRUCTOR
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, UserDetailsService userDetailsService) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserDetailsService userDetailsService) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
     }
 
 //    GETS
-    public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
+    public Optional<UserDTO> findById(Long id) {
+
+        return userRepository.findById(id)
+                .map(this::convertToDTO);
     }
 
     public List<UserDTO> findAllUsers() {

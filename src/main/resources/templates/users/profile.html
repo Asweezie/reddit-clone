@@ -4,8 +4,8 @@
     <title>User Page</title>
 </head>
 <body>
-<h1>Users Page</h1>
-<h2>Current users:</h2>
+<h1>User Profile</h1>
+<h2 th:text="${user.username}" style="font-size: 32px"></h2>
 <table>
     <thead>
     <tr>
@@ -17,7 +17,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="user : ${users}">
+    <tr >
         <td th:text="${user.id}">User ID</td>
         <td th:text="${user.username}">Username</td>
         <td th:text="${user.email}">User Email</td>
@@ -30,11 +30,5 @@
     </tr>
     </tbody>
 </table>
-<br>
-<form action="/users/search" method="GET">
-    <input type="text" name="id" placeholder="Enter user ID">
-    <button type="submit">Search</button>
-    <span th:text="${error}"></span>
-</form>
 </body>
 </html>
