@@ -25,7 +25,7 @@ public class User {
     private String username;
 
     @Size(min = 5, message = "Email must be at least 5 characters long")
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
 
     @NotBlank(message = "No blank!!")

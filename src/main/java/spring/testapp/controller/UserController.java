@@ -1,6 +1,7 @@
 package spring.testapp.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,9 +19,11 @@ import java.util.Optional;
 public class UserController {
     private final UserService userService;
 
+
     public UserController(UserService userService) {
         this.userService = userService;
     }
+
 
 
 //    GETS
