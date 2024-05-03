@@ -1,18 +1,14 @@
 package spring.testapp.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import spring.testapp.dto.UserDTO;
 import spring.testapp.model.User;
 import spring.testapp.repository.UserRepository;
+
 
 import java.util.Collections;
 import java.util.List;
@@ -23,15 +19,13 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserDetailsService userDetailsService;
 
 
 //    CONSTRUCTOR
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserDetailsService userDetailsService) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.userDetailsService = userDetailsService;
     }
 
 //    GETS
@@ -57,18 +51,23 @@ public class UserService {
 //    }
 
 //    CREATION
-    public void createUser(User user) {
+    public void createUser(User user, HttpServletRequest request) {
+        String rawPassword = user.getPassword();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        autoLogin(user.getUsername());
+        authWithHttpServletRequest(request, user.getUsername(), rawPassword);
     }
 
-    private void autoLogin(String username) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
 
+
+
+    private void authWithHttpServletRequest(HttpServletRequest request, String username, String password) {
+        try {
+            request.login(username, password);
+        } catch (ServletException e) {
+
+        }
+    }
 
 
 //    UPDATE

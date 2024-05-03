@@ -1,5 +1,6 @@
 package spring.testapp.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -70,13 +71,13 @@ public class UserController {
 
 //    POSTS
     @PostMapping("/create")
-    public String createUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
+    public String createUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, HttpServletRequest request) {
 
         if (bindingResult.hasErrors()) {
             return "users/create";
         }
 
-        userService.createUser(user);
+        userService.createUser(user, request);
         return "redirect:/users";
     }
 
