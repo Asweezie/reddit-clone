@@ -49,7 +49,7 @@ public class UserService {
     }
 
     private UserDTO convertToDTO(User user) {
-        return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getCreatedAt(), user.isEnabled());
+        return new UserDTO(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getCreatedAt(), user.isEnabled());
     }
 
 //    public List<User> findAllUsers() {

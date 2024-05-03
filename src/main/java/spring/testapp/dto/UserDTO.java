@@ -12,6 +12,7 @@ import java.time.Instant;
 public class UserDTO {
     private Long id;
     private String username;
+    private String password;
     private String email;
     private Instant createdAt;
     private boolean enabled;
