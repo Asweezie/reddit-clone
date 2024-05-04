@@ -11,9 +11,14 @@ import com.amazonaws.services.s3.model.ListObjectsV2Result;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import spring.testapp.model.Image;
+import spring.testapp.model.User;
+import spring.testapp.repository.ImageRepository;
+import spring.testapp.repository.UserRepository;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,6 +31,14 @@ import java.util.stream.Collectors;
 @Service
 public class ImageStorageService {
     private AmazonS3 s3client;
+    private final ImageRepository imageRepository;
+    private final UserRepository userRepository;
+
+    @Autowired
+    public ImageStorageService(ImageRepository imageRepository, UserRepository userRepository) {
+        this.imageRepository = imageRepository;
+        this.userRepository = userRepository;
+    }
 
     @Value("${aws.access_key_id}")
     private String awsId;
@@ -67,19 +80,26 @@ public class ImageStorageService {
                 .collect(Collectors.toList());
     }
 
-    public String uploadFile(MultipartFile file, Long userId) {
+    public String uploadFile(MultipartFile file, Long userId) throws IOException {
         String fileUrl = "";
         try {
             Path tempFile = Files.createTempFile("upload-", file.getOriginalFilename());
             file.transferTo(tempFile.toFile());
 
             String fileName = constructFileName(userId, file.getOriginalFilename());
-            fileUrl = fileName; // Usually, you might want to return a URL or a path that includes the bucket name
+            fileUrl = s3client.getUrl(bucketName, fileName).toExternalForm(); // Get the URL from S3
 
             s3client.putObject(new PutObjectRequest(bucketName, fileName, tempFile.toFile()));
             Files.delete(tempFile); // Delete temporary file after upload
+
+            User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+            Image image = new Image();
+            image.setImageUrl(fileUrl);
+            image.setUser(user);
+            imageRepository.save(image);
         } catch (Exception e) {
             e.printStackTrace(); // Consider more sophisticated error handling and logging
+            throw new IOException("Failed to upload file", e);
         }
         return fileUrl;
     }
