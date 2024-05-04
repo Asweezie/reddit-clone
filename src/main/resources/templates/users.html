@@ -5,6 +5,8 @@
 </head>
 <body>
 <h1>Users Page</h1>
+<h2 th:text="'Welcome, ' + ${loggedInUser.username}"></h2>
+<h2 th:text="'Your ID is : ' + ${loggedInUser.id}"></h2>
 <h2>Current users:</h2>
 <table>
     <thead>

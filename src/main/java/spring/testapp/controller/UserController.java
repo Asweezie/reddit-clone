@@ -2,6 +2,9 @@ package spring.testapp.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import spring.testapp.dto.UserDTO;
+import spring.testapp.model.CustomUserDetails;
 import spring.testapp.model.User;
 import spring.testapp.service.UserService;
 
@@ -31,8 +35,15 @@ public class UserController {
 //    GETS
     @GetMapping
     public String getUsersPage(Model model) {
-        List<UserDTO> users = userService.findAllUsers();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
+        // Now you can directly use userDetails to get any required info
+        model.addAttribute("loggedInUser", userDetails);
+
+
+
+        List<UserDTO> users = userService.findAllUsers();
         model.addAttribute("users", users);
         // Fetch the list of users from the service layer and add it to the model
         return "users";
