@@ -3,6 +3,6 @@ add aws secrets manager to handle secret key
 add functionality to set images to users rather than a global upload image.
     change gallery to user specific galleries
 
-
+add logout feature
 
 add caches for login. eg no need to log back in again unless you log out. cookies?

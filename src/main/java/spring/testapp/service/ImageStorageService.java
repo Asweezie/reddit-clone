@@ -18,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,28 +67,30 @@ public class ImageStorageService {
                 .collect(Collectors.toList());
     }
 
-    public String uploadFile(MultipartFile file) {
+    public String uploadFile(MultipartFile file, Long userId) {
         String fileUrl = "";
         try {
-            File fileObj = convertMultiPartFileToFile(file);
-            String fileName = file.getOriginalFilename();
-            fileUrl =  fileName;
-            s3client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
-            fileObj.delete();
-        } catch(Exception e) {
-            e.printStackTrace();
+            Path tempFile = Files.createTempFile("upload-", file.getOriginalFilename());
+            file.transferTo(tempFile.toFile());
+
+            String fileName = constructFileName(userId, file.getOriginalFilename());
+            fileUrl = fileName; // Usually, you might want to return a URL or a path that includes the bucket name
+
+            s3client.putObject(new PutObjectRequest(bucketName, fileName, tempFile.toFile()));
+            Files.delete(tempFile); // Delete temporary file after upload
+        } catch (Exception e) {
+            e.printStackTrace(); // Consider more sophisticated error handling and logging
         }
         return fileUrl;
     }
 
-    private File convertMultiPartFileToFile(MultipartFile file) {
-        File convertedFile = new File(file.getOriginalFilename());
-        try (FileOutputStream fos = new FileOutputStream(convertedFile)) {
-            fos.write(file.getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return convertedFile;
+    private String constructFileName(Long userId, String originalFileName) {
+        // Sanitize file name here if necessary
+        return "user-" + userId + "/" + sanitizeFileName(originalFileName);
+    }
+
+    private String sanitizeFileName(String originalFileName) {
+        return originalFileName.replaceAll("[^a-zA-Z0-9.\\-_]", "_");
     }
 }
 
