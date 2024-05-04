@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Gallery</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+<h1>Gallery</h1>
+<div class="image-container">
+    <div th:each="url : ${imageUrls}">
+        <img th:src="${url}" alt="Image from S3" />
+    </div>
+</div>
+</body>
+</html>

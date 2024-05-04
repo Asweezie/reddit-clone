@@ -10,7 +10,7 @@
     </parent>
     <groupId>spring</groupId>
     <artifactId>My-Reddit-Clone</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Test-app</name>
     <description>Test-app</description>
@@ -63,6 +63,12 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>1.12.713</version>
         </dependency>
 
 
