@@ -39,13 +39,16 @@
 
 <br>
 
-<form method="POST" th:action="@{/api/images/upload}" enctype="multipart/form-data">
+<form method="POST" th:action="@{/images/upload}" enctype="multipart/form-data">
     Select image to upload:
     <input type="file" name="image" id="image">
     <button type="submit">Upload Image</button>
 </form>
+<br>
 <div th:if="${imageMessage}" th:text="${imageMessage}"></div>
 <div th:if="${imageError}" th:text="${imageError}"></div>
+<h2><a href="/images/gallery">Gallery</a></h2>
+
 
 </body>
 </html>
