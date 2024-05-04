@@ -6,3 +6,5 @@ add functionality to set images to users rather than a global upload image.
 add logout feature
 
 add caches for login. eg no need to log back in again unless you log out. cookies?
+
+prevent null uploads
